@@ -1,0 +1,25 @@
+server:
+    port: 9762
+
+spring:
+    application:
+        name: yxx-config
+
+    profiles:
+    active: native
+    cloud:
+        config:
+            server:
+                # 本地配置
+                native:
+                    search-locations: config/local
+                # 远程git
+                git:
+                    uri: https://github.com/spring-cloud-samples/config-repo
+
+eureka:
+    client:
+        service-url:
+            defaultZone: http://localhost:9761/eureka/
+    instance:
+        prefer-ip-address: true

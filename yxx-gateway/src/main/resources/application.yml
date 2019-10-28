@@ -1,0 +1,41 @@
+server:
+  port: 9763
+
+spring:
+  application:
+    name: yxx-gateway
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            # 允许跨域
+            allowed-origins: "*"
+            allowed-methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            allowed-headers: "*"
+            allow-credentials: true
+      discovery:
+        locator:
+          enabled: true
+      routes:
+      # 服务a
+      - id: yxx-message
+        predicates:
+        - Path=/api/msg
+        uri: lb://yxx-message
+      # 服务b
+      - id: yxx-streaming
+        predicates:
+        - Path=/api/stream
+        uri: lb://yxx-streaming
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9761/eureka/
+  instance:
+    prefer-ip-address: true

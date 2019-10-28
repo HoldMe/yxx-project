@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/yxx-eureka/pom.xml" />
+        <option value="$PROJECT_DIR$/yxx-config/pom.xml" />
+        <option value="$PROJECT_DIR$/yxx-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/yxx-message/pom.xml" />
+        <option value="$PROJECT_DIR$/yxx-streaming/pom.xml" />
+        <option value="$PROJECT_DIR$/yxx-elastic/pom.xml" />
+        <option value="$PROJECT_DIR$/elastic-job-spring-boot-starter/spring-boot-elastic-job-starter/pom.xml" />
+        <option value="$PROJECT_DIR$/spring-boot-elastic-job-starter/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>

@@ -1,0 +1,39 @@
+server:
+    port: 9766
+
+spring:
+    application:
+        name: yxx-streaming
+
+    rabbitmq:
+        host: localhost
+        port: 5672
+        username: guest
+        password: guest
+
+    cloud:
+        #\u5F00\u542F\u914D\u7F6E\u670D\u52A1\u53D1\u73B0
+        config:
+            fail-fast: true
+            discovery:
+                enabled: true
+                service-id: yxx-config
+            name: common
+#      label: master
+#      profile: @profileActive@
+#      uri: @env.config.url@
+#      username: @env.username@
+#      password: @env.password@
+
+elastic:
+    job:
+        zk:
+            serverLists: 127.0.0.1:2181
+            namespace: cxytiandi_job2
+
+eureka:
+    client:
+        service-url:
+            defaultZone: http://localhost:9761/eureka/
+    instance:
+        prefer-ip-address: true
