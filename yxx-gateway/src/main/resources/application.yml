@@ -32,6 +32,11 @@ spring:
         predicates:
         - Path=/api/stream
         uri: lb://yxx-streaming
+      # 服务b
+      - id: yxx-elastic
+        predicates:
+        - Path=/api/elastic
+        uri: lb://yxx-elastic
 
 eureka:
   client:

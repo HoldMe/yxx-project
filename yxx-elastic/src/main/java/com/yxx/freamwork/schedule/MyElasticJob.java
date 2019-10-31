@@ -1,6 +1,6 @@
 package com.yxx.freamwork.schedule;
 
-import com.cxytiandi.elasticjob.annotation.ElasticJobConf;
+//import com.cxytiandi.elasticjob.annotation.ElasticJobConf;
 import com.dangdang.ddframe.job.api.ShardingContext;
 import com.dangdang.ddframe.job.api.simple.SimpleJob;
 
@@ -15,18 +15,22 @@ import java.util.Date;
  * @author wangpan
  * @date 2019/10/28
  */
-@ElasticJobConf(name = "MySimpleJob", cron = "0/10 * * * * ?",
-        shardingItemParameters = "0=0,1=1", description = "简单任务")
+//@ElasticJobConf(name = "MySimpleJob", cron = "0/10 * * * * ?",
+//        shardingItemParameters = "0=0,1=1", description = "简单任务")
 public class MyElasticJob implements SimpleJob {
     @Override
     public void execute(ShardingContext shardingContext) {
-        // 分片数量
-        String shardingParameter = shardingContext.getShardingParameter();
-        int value = Integer.parseInt(shardingParameter) > 2 ? 4 : 2;
-        for(int i=0; i < 10000; i++){
-            if(i % value > 0){
-                System.out.println(new SimpleDateFormat("YYY-mm-DD HH:mm:ss").format(new Date()) + ": 开始执行任务");
-            }
-        }
+        System.out.println(String.format("------Thread ID: %s, 任务总片数: %s, " +
+                        "当前分片项: %s.当前参数: %s,"+
+                        "当前任务名称: %s.当前任务参数: %s"
+                ,
+                Thread.currentThread().getId(),
+                shardingContext.getShardingTotalCount(),
+                shardingContext.getShardingItem(),
+                shardingContext.getShardingParameter(),
+                shardingContext.getJobName(),
+                shardingContext.getJobParameter()
+
+        ));
     }
 }
