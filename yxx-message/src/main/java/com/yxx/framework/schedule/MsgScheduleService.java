@@ -28,7 +28,7 @@ public class MsgScheduleService{
     @Value("bbb")
     private String bbb;
 
-    @Scheduled(cron = "0/10 * * * * ?")
+    @Scheduled(cron = "0/30 * * * * ?")
     public void sendTask(){
         System.out.println("====================" + aaa);
         producerHandler.send("hello",new Date().toString()+"==============================="+aaa);
