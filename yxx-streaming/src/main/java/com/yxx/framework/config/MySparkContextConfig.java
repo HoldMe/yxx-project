@@ -20,7 +20,7 @@ public class MySparkContextConfig {
     @Bean
     @ConditionalOnMissingBean(SparkConf.class)
     public SparkConf sparkConf(){
-        return new SparkConf().setAppName("spark_test").setMaster("127.0.0.1");
+        return new SparkConf().setAppName("spark_test").setMaster("local");
     }
 
     @Bean

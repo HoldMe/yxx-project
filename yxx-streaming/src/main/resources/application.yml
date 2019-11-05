@@ -31,3 +31,8 @@ eureka:
       defaultZone: http://localhost:9761/eureka/
   instance:
     prefer-ip-address: true
+
+#spark:
+#  spark-home: .
+#  app-name: sparkTest
+#  master: local[4]

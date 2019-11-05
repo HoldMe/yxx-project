@@ -14,7 +14,6 @@ import com.google.common.base.Optional;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableEurekaClient
 //@EnableElasticJob
 public class YxxElasticApplication {
     public static void main(String[] args) throws Exception{
