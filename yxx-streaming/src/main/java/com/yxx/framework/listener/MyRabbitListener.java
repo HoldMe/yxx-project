@@ -40,26 +40,23 @@ public class MyRabbitListener implements Serializable {
     @Autowired
     private JavaSparkContext sc;
 
+    private SparkSession sparkSession;
+
     @RabbitListener(queues = "hello")
     @RabbitHandler
     public void execute(String  content) {
         System.out.println("get msg: " + content);
-        sparkSqlTest();
     }
 
-    public void sparkSqlTest(){
+    private void init(){
+        if (this.sparkSession == null){
+            SparkConf conf = new SparkConf().setAppName("spark_test").setMaster("local");
+            this.sparkSession = SparkSession.builder().config(conf).getOrCreate();
+        }
+    }
+
+    private void readTxt(){
         JavaRDD<String> lines = sc.textFile("F:/pythonWorkspace/scrapy_project/douban/douban.json");
-        SparkConf conf = new SparkConf().setAppName("spark_test").setMaster("local");
-        SparkSession session = SparkSession.builder().config(conf).getOrCreate();
-        Dataset<Row> json = session.read().format("json").load("F:/pythonWorkspace/scrapy_project/douban/douban.json");
-        json.select("*").filter("title like '%天空%'").show(10);
-    }
-
-    public void statisticTop10(JavaRDD<Object> source){
-        source.foreach(str -> System.out.println(str));
-    }
-
-    private void readTxt(SparkSession session, JavaRDD lines){
         JavaRDD map = lines.map(new Function<String, Movies>() {
             @Override
             public Movies call(String s) throws Exception {
@@ -75,9 +72,14 @@ public class MyRabbitListener implements Serializable {
         fileds.add(DataTypes.createStructField("quote", DataTypes.StringType,true));
         StructType structType = DataTypes.createStructType(fileds);
 
-        Dataset<Row> dataFrame = session.createDataFrame(lines, Movies.class);
+        Dataset<Row> dataFrame = sparkSession.createDataFrame(lines, Movies.class);
         dataFrame.createOrReplaceTempView("movies");
-        Dataset<Row> sql = session.sql("select * from movies limit 5");
+        Dataset<Row> sql = sparkSession.sql("select * from movies limit 5");
         sql.show();
+    }
+
+    private void readJson(){
+        Dataset<Row> json = sparkSession.read().format("json").load("F:/pythonWorkspace/scrapy_project/douban/douban.json");
+        json.select("*").filter("title like '%天空%'").show(10);
     }
 }
