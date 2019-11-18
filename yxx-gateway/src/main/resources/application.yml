@@ -1,5 +1,5 @@
 server:
-  port: 9763
+  port: 80 #9763
 
 spring:
   application:
@@ -37,6 +37,11 @@ spring:
         predicates:
         - Path=/api/elastic
         uri: lb://yxx-elastic
+      # 服务b
+      - id: yxx-chat
+        predicates:
+        - Path=/api/chat
+        uri: lb://yxx-chat
 
 eureka:
   client:
