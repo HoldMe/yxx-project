@@ -1,5 +1,5 @@
 server:
-  port: 80 #9763
+  port: 9763
 
 spring:
   application:
@@ -21,27 +21,50 @@ spring:
       discovery:
         locator:
           enabled: true
+          lower-case-service-id: true
+      default-filters:
+      - StripPrefix=2
+      # 熔断器 服务down机时进入熔断器，服务异常不进入
+      - name: Hystrix
+        args:
+          # HystrixCommand
+          name: fallbackcmd
+          fallback-uri: forward:/defaultfallback
+      # 重试机制
+      - name: Retry
+        args:
+          # 重试次数
+          retries: 3
+          statuses: BAD_GATEWAY,GATEWAY_TIMEOUT,SERVICE_UNAVAILABLE,INTERNAL_SERVER_ERROR
+          series:
+          - SERVER_ERROR
+          methods:
+          - GET
+          - POST
+          exceptions:
+          - java.io.IOException
+          - org.springframework.cloud.gateway.support.TimeoutException
       routes:
       # 服务a
-      - id: yxx-message
-        predicates:
-        - Path=/api/msg
+      - id: api-message
         uri: lb://yxx-message
-      # 服务b
-      - id: yxx-streaming
         predicates:
-        - Path=/api/stream
+        - Path=/api/msg/**
+      # 服务b
+      - id: api-streaming
         uri: lb://yxx-streaming
-      # 服务b
-      - id: yxx-elastic
         predicates:
-        - Path=/api/elastic
+        - Path=/api/stream/**
+      # 服务b
+      - id: api-elastic
         uri: lb://yxx-elastic
-      # 服务b
-      - id: yxx-chat
         predicates:
-        - Path=/api/chat
+        - Path=/api/elastic/**
+      # 服务b
+      - id: api-chat
         uri: lb://yxx-chat
+        predicates:
+        - Path=/api/chat/**
 
 eureka:
   client:

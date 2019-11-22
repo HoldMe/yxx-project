@@ -15,6 +15,9 @@ import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
+import org.apache.spark.streaming.Duration;
+import org.apache.spark.streaming.api.java.JavaReceiverInputDStream;
+import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +25,9 @@ import org.springframework.context.annotation.Configuration;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -42,12 +47,18 @@ public class MyRabbitListener implements Serializable {
 
     private SparkSession sparkSession;
 
-    @RabbitListener(queues = "hello")
+    private JavaStreamingContext jsc;
+
+    @RabbitListener(queues = "log")
     @RabbitHandler
     public void execute(String  content) {
         System.out.println("get msg: " + content);
+//        streamRabbitMsg();
     }
 
+    /**
+     * 初始化sparkContext
+     */
     private void init(){
         if (this.sparkSession == null){
             SparkConf conf = new SparkConf().setAppName("spark_test").setMaster("local");
@@ -55,6 +66,38 @@ public class MyRabbitListener implements Serializable {
         }
     }
 
+    /**
+     * 初始化sparkContext
+     */
+    private void initJsc(){
+        if (this.jsc == null){
+            SparkConf conf = new SparkConf().setAppName("spark_test").setMaster("local");
+            this.jsc = new JavaStreamingContext(conf,new Duration(1000));
+        }
+    }
+
+    /**
+     * spark接收消息
+     */
+//    private void streamRabbitMsg(){
+////        initJsc();
+////        Map<String, String> params = new HashMap<>();
+////        params.put("hosts", "localhost");
+////        params.put("port", "5672");
+////        params.put("userName", "guest");
+////        params.put("password", "guest");
+////        params.put("queueName", "log");
+////        params.put("durable", "false");
+////        Function<QueueingConsumer.Delivery, String> handler = message -> new String(message.getBody());
+////        JavaReceiverInputDStream<String>sparkStreaming = RabbitMQUtils.createJavaStream(jsc,params);
+////        sparkStreaming.print();
+////        jsc.start();
+////        jsc.awaitTermination();
+////    }
+
+    /**
+     * 读取文本作为spark SQL数据源
+     */
     private void readTxt(){
         JavaRDD<String> lines = sc.textFile("F:/pythonWorkspace/scrapy_project/douban/douban.json");
         JavaRDD map = lines.map(new Function<String, Movies>() {
@@ -78,6 +121,9 @@ public class MyRabbitListener implements Serializable {
         sql.show();
     }
 
+    /**
+     * 读取json作为spark SQL数据源
+     */
     private void readJson(){
         Dataset<Row> json = sparkSession.read().format("json").load("F:/pythonWorkspace/scrapy_project/douban/douban.json");
         json.select("*").filter("title like '%天空%'").show(10);

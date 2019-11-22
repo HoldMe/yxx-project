@@ -16,7 +16,10 @@ public class YxxStreamingApplication {
 
     public static void main(String[] args) throws Exception{
         SpringApplication.run(YxxStreamingApplication.class, args);
+        startStormJob();
+    }
 
+    public static void startStormJob(){
         TopologyBuilder topologyBuilder = new TopologyBuilder();
         topologyBuilder.setSpout("spout1",new RabbitmqSpout());
         topologyBuilder.setBolt("blot1",new MyBlot()).shuffleGrouping("spout1");
