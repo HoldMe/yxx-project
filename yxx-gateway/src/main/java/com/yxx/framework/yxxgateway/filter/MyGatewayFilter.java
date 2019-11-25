@@ -13,7 +13,7 @@ import java.net.URI;
 
 /**
  * <p>
- * desc
+ * desc 网关拦截器
  * </p>
  *
  * @author wangpan
