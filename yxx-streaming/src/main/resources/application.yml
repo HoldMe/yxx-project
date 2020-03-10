@@ -24,6 +24,10 @@ spring:
 #      uri: @env.config.url@
 #      username: @env.username@
 #      password: @env.password@
+    alibaba:
+      seata:
+        #事务群组elansen_tx_group，对应SpringCloudConfig配置项为TC集群名
+        tx-service-group: elansen_tx_group
 
 eureka:
   client:
@@ -31,6 +35,17 @@ eureka:
       defaultZone: http://localhost:9761/eureka/
   instance:
     prefer-ip-address: true
+
+seata:
+  registry:
+    type: eureka #注册方式
+    eureka:
+      serviceUrl: http://localhost:9761/eureka/
+      application: seata-server
+      weight: 1
+
+  config:
+    type: SpringCloudConfig
 
 #spark:
 #  spark-home: .

@@ -8,6 +8,7 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
+import org.apache.spark.ml.clustering.KMeansModel;
 import org.apache.spark.rdd.RDD;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -128,4 +129,9 @@ public class MyRabbitListener implements Serializable {
         Dataset<Row> json = sparkSession.read().format("json").load("F:/pythonWorkspace/scrapy_project/douban/douban.json");
         json.select("*").filter("title like '%天空%'").show(10);
     }
+
+    private void mllibTest(String path){
+        KMeansModel kMeansModel = KMeansModel.load(path).setFeaturesCol("app_list_cv").setPredictionCol("prediction");
+    }
 }
+
