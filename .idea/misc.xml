@@ -13,6 +13,7 @@
         <option value="$PROJECT_DIR$/yxx-elastic/pom.xml" />
         <option value="$PROJECT_DIR$/elastic-job-spring-boot-starter/spring-boot-elastic-job-starter/pom.xml" />
         <option value="$PROJECT_DIR$/spring-boot-elastic-job-starter/pom.xml" />
+        <option value="$PROJECT_DIR$/yxx-mahout/pom.xml" />
       </list>
     </option>
   </component>

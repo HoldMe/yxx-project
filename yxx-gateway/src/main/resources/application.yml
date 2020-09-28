@@ -28,7 +28,7 @@ spring:
       - name: Hystrix
         args:
           # HystrixCommand
-          name: fallbackcmd
+          name: fallback
           fallback-uri: forward:/defaultfallback
       # 重试机制
       - name: Retry
@@ -65,6 +65,11 @@ spring:
         uri: lb://yxx-chat
         predicates:
         - Path=/api/chat/**
+      # 服务b
+      - id: api-mahout
+        uri: lb://yxx-mahout
+        predicates:
+        - Path=/api/mahout/**
 
 eureka:
   client:
@@ -72,3 +77,6 @@ eureka:
       defaultZone: http://localhost:9761/eureka/
   instance:
     prefer-ip-address: true
+
+logging:
+  config: classpath:logback.xml

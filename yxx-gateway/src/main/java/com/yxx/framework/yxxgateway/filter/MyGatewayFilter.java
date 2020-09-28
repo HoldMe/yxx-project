@@ -1,5 +1,6 @@
 package com.yxx.framework.yxxgateway.filter;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -19,6 +20,7 @@ import java.net.URI;
  * @author wangpan
  * @date 2019/11/22
  */
+@Slf4j
 @Component
 public class MyGatewayFilter implements GlobalFilter {
 
@@ -35,7 +37,7 @@ public class MyGatewayFilter implements GlobalFilter {
         String body = uri.getRawQuery();
         String msg = host+" "+port+" "+path;
         amqpTemplate.convertAndSend("log",msg);
-        System.out.println("queue msg:  " + msg);
+        log.info("queue msg:"+msg);
         return chain.filter(exchange);
     }
 }

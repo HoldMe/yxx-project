@@ -15,7 +15,10 @@ spring:
                     search-locations: config/local
                 # 远程git
                 git:
-                    uri: https://github.com/spring-cloud-samples/config-repo
+                    uri: https://github.com/HoldMe/yxx-project.git
+                    search-paths: config/local
+                    username: 123456
+                    password: 123456
 
 eureka:
     client:

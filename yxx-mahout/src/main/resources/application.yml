@@ -1,0 +1,55 @@
+server:
+  port: 9769
+
+spring:
+  application:
+    name: yxx-mahout
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+  cloud:
+    #\u5F00\u542F\u914D\u7F6E\u670D\u52A1\u53D1\u73B0
+    config:
+      fail-fast: true
+      discovery:
+        enabled: true
+        service-id: yxx-config
+      name: common
+    #      label: master
+    #      profile: @profileActive@
+    #      uri: @env.config.url@
+    #      username: @env.username@
+    #      password: @env.password@
+    alibaba:
+      seata:
+        #\u4E8B\u52A1\u7FA4\u7EC4elansen_tx_group\uFF0C\u5BF9\u5E94SpringCloudConfig\u914D\u7F6E\u9879\u4E3ATC\u96C6\u7FA4\u540D
+        tx-service-group: elansen_tx_group
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9761/eureka/
+  instance:
+    prefer-ip-address: true
+
+seata:
+  registry:
+    type: eureka #\u6CE8\u518C\u65B9\u5F0F
+    eureka:
+      serviceUrl: http://localhost:9761/eureka/
+      application: seata-server
+      weight: 1
+
+  config:
+    type: SpringCloudConfig
+
+#spark:
+#  spark-home: .
+#  app-name: sparkTest
+#  master: local[4]
+#logging:
+#  config: classpath:logback.xml

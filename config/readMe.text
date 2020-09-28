@@ -1,0 +1,10 @@
+# 启动flumn
+flume-ng agent --conf conf --conf-file conf/flume.conf -n a1 -Dflume.root.logger=INFO,console
+
+# 引入logback-flume的依赖
+<groupId>com.teambytes.logback</groupId>
+<artifactId>logback-flume-appender_2.10</artifactId>
+<version>0.0.9</version>
+
+# yml文件配置
+logging.onfig: classpath:logback.xml

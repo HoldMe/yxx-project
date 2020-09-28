@@ -78,6 +78,7 @@
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>2.9.2</version>
             </dependency>
+
             <!--swagger插件
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
@@ -91,6 +92,12 @@
             </dependency>
             -->
             <!-- swagger end -->
+            <!-- zipkin localhost:9411/zipkin/ -->
+            <!--<dependency>-->
+                <!--<groupId>org.springframework.cloud</groupId>-->
+                <!--<artifactId>spring-cloud-starter-zipkin</artifactId>-->
+            <!--</dependency>-->
+
         </dependencies>
     </dependencyManagement>
 

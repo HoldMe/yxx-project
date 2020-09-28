@@ -74,3 +74,12 @@ seata:
     remote:
     ## store locks in the seata's server
 
+# 日志
+logging:
+  file: logs/${spring.application.name}.log
+  level:
+  level.com.yxx.framework: info
+  level.org.springframework: info
+  level.org.springframework.data.mongodb.core: debug
+
+

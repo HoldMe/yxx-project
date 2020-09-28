@@ -3,6 +3,8 @@ package com.yxx.framework.listener;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.rabbitmq.client.DefaultConsumer;
+import com.stratio.receiver.RabbitMQUtils;
 import com.yxx.framework.dto.Movies;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
@@ -54,7 +56,7 @@ public class MyRabbitListener implements Serializable {
     @RabbitHandler
     public void execute(String  content) {
         System.out.println("get msg: " + content);
-//        streamRabbitMsg();
+        streamRabbitMsg();
     }
 
     /**
@@ -80,21 +82,25 @@ public class MyRabbitListener implements Serializable {
     /**
      * spark接收消息
      */
-//    private void streamRabbitMsg(){
-////        initJsc();
-////        Map<String, String> params = new HashMap<>();
-////        params.put("hosts", "localhost");
-////        params.put("port", "5672");
-////        params.put("userName", "guest");
-////        params.put("password", "guest");
-////        params.put("queueName", "log");
-////        params.put("durable", "false");
-////        Function<QueueingConsumer.Delivery, String> handler = message -> new String(message.getBody());
-////        JavaReceiverInputDStream<String>sparkStreaming = RabbitMQUtils.createJavaStream(jsc,params);
-////        sparkStreaming.print();
-////        jsc.start();
-////        jsc.awaitTermination();
-////    }
+    private void streamRabbitMsg(){
+        initJsc();
+        Map<String, String> params = new HashMap<>();
+        params.put("hosts", "localhost");
+        params.put("port", "5672");
+        params.put("userName", "guest");
+        params.put("password", "guest");
+        params.put("queueName", "log");
+        params.put("durable", "false");
+        Function<DefaultConsumer, String> handler = message -> new String(message.getConsumerTag());
+        JavaReceiverInputDStream<String> sparkStreaming = RabbitMQUtils.createJavaStream(jsc,params);
+        sparkStreaming.print();
+        jsc.start();
+        try {
+            jsc.awaitTermination();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 读取文本作为spark SQL数据源
