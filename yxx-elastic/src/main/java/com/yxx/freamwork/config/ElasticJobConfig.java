@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Configuration;
  * @author wangpan
  * @date 2019/10/31
  */
-@Configuration
+//@Configuration
 public class ElasticJobConfig {
 
     @Value("${elastic.job.cron}")

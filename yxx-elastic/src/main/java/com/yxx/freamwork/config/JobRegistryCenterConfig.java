@@ -1,5 +1,6 @@
 package com.yxx.freamwork.config;
 
+import com.cxytiandi.elasticjob.parser.JobConfParser;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperConfiguration;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
 import org.slf4j.Logger;
@@ -24,8 +25,13 @@ public class JobRegistryCenterConfig {
 
     @Bean(initMethod = "init")
     public ZookeeperRegistryCenter registryCenter(){
-        System.out.println(String.format("serverList:{}",serverList));
-        System.out.println(String.format("namespace:{}",nameSpace));
+        System.out.println(String.format("serverList:%s",serverList));
+        System.out.println(String.format("namespace:%s",nameSpace));
         return new ZookeeperRegistryCenter(new ZookeeperConfiguration(serverList,nameSpace));
+    }
+
+    @Bean
+    public JobConfParser jobConfParser() {
+        return new JobConfParser();
     }
 }

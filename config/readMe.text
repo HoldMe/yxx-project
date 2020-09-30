@@ -8,3 +8,9 @@ flume-ng agent --conf conf --conf-file conf/flume.conf -n a1 -Dflume.root.logger
 
 # yml文件配置
 logging.onfig: classpath:logback.xml
+
+
+# 启动storm
+storm nimbus
+storm supervisor
+storm ui

@@ -14,11 +14,13 @@ import org.apache.spark.ml.clustering.KMeansModel;
 import org.apache.spark.rdd.RDD;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
+import org.apache.spark.sql.RowFactory;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
 import org.apache.spark.streaming.Duration;
+import org.apache.spark.streaming.Seconds;
 import org.apache.spark.streaming.api.java.JavaReceiverInputDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
@@ -46,7 +48,7 @@ public class MyRabbitListener implements Serializable {
     private static final long serialVersionUID = -1275437007882875556L;
 
     @Autowired
-    private JavaSparkContext sc;
+    public static JavaSparkContext sc;
 
     private SparkSession sparkSession;
 
@@ -64,8 +66,11 @@ public class MyRabbitListener implements Serializable {
      */
     private void init(){
         if (this.sparkSession == null){
-            SparkConf conf = new SparkConf().setAppName("spark_test").setMaster("local");
+            SparkConf conf = new SparkConf().setAppName("spark_test").setMaster("local[1]");
             this.sparkSession = SparkSession.builder().config(conf).getOrCreate();
+        }
+        if (sc == null) {
+            sc = JavaSparkContext.fromSparkContext(sparkSession.sparkContext());
         }
     }
 
@@ -73,8 +78,8 @@ public class MyRabbitListener implements Serializable {
      * 初始化sparkContext
      */
     private void initJsc(){
+        SparkConf conf = new SparkConf().setAppName("spark_test").setMaster("local[2]");
         if (this.jsc == null){
-            SparkConf conf = new SparkConf().setAppName("spark_test").setMaster("local");
             this.jsc = new JavaStreamingContext(conf,new Duration(1000));
         }
     }
@@ -91,7 +96,7 @@ public class MyRabbitListener implements Serializable {
         params.put("password", "guest");
         params.put("queueName", "log");
         params.put("durable", "false");
-        Function<DefaultConsumer, String> handler = message -> new String(message.getConsumerTag());
+//        Function<DefaultConsumer, String> handler = message -> new String(message.getConsumerTag());
         JavaReceiverInputDStream<String> sparkStreaming = RabbitMQUtils.createJavaStream(jsc,params);
         sparkStreaming.print();
         jsc.start();
@@ -106,23 +111,24 @@ public class MyRabbitListener implements Serializable {
      * 读取文本作为spark SQL数据源
      */
     private void readTxt(){
+        init();
         JavaRDD<String> lines = sc.textFile("F:/pythonWorkspace/scrapy_project/douban/douban.json");
-        JavaRDD map = lines.map(new Function<String, Movies>() {
+        JavaRDD<Movies> map = lines.map(new Function<String, Movies>() {
             @Override
             public Movies call(String s) throws Exception {
-                JsonObject asJsonObject = new JsonParser().parse(s).getAsJsonObject();
                 Movies m = new Gson().fromJson(s, Movies.class);
                 return m;
+//                return RowFactory.create(m.getTitle(),m.getDesc(),m.getStars(),m.getQuote());
             }
         });
         List<StructField> fileds = new ArrayList<>();
         fileds.add(DataTypes.createStructField("title", DataTypes.StringType,true));
         fileds.add(DataTypes.createStructField("desc", DataTypes.StringType,true));
-        fileds.add(DataTypes.createStructField("stars", DataTypes.FloatType,true));
+        fileds.add(DataTypes.createStructField("stars", DataTypes.StringType,true));
         fileds.add(DataTypes.createStructField("quote", DataTypes.StringType,true));
         StructType structType = DataTypes.createStructType(fileds);
-
-        Dataset<Row> dataFrame = sparkSession.createDataFrame(lines, Movies.class);
+//        Dataset<Row> dataFrame = sparkSession.createDataFrame(map, structType);
+        Dataset<Row> dataFrame = sparkSession.createDataFrame(map, Movies.class);
         dataFrame.createOrReplaceTempView("movies");
         Dataset<Row> sql = sparkSession.sql("select * from movies limit 5");
         sql.show();
@@ -132,12 +138,20 @@ public class MyRabbitListener implements Serializable {
      * 读取json作为spark SQL数据源
      */
     private void readJson(){
-        Dataset<Row> json = sparkSession.read().format("json").load("F:/pythonWorkspace/scrapy_project/douban/douban.json");
+        init();
+        Dataset<Row> json = sparkSession.read()
+                .format("org.apache.spark.sql.execution.datasources.json.JsonFileFormat")
+                .load("F:/pythonWorkspace/scrapy_project/douban/douban.json");
         json.select("*").filter("title like '%天空%'").show(10);
     }
 
     private void mllibTest(String path){
         KMeansModel kMeansModel = KMeansModel.load(path).setFeaturesCol("app_list_cv").setPredictionCol("prediction");
+    }
+
+    public static void main(String[] args) {
+        new MyRabbitListener().streamRabbitMsg();
+//        new MyRabbitListener().readTxt();
     }
 }
 
