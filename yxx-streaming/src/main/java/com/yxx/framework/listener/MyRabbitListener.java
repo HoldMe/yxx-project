@@ -150,8 +150,7 @@ public class MyRabbitListener implements Serializable {
     }
 
     public static void main(String[] args) {
-        new MyRabbitListener().streamRabbitMsg();
-//        new MyRabbitListener().readTxt();
+        new MyRabbitListener().readJson();
     }
 }
 

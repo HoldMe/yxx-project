@@ -1,6 +1,58 @@
 aaa: 'aaa'
 bbb: 'bbb'
 
+# mybatis对应的映射文件路径
+mybatis:
+  mapper-locations: classpath*:com/yxx/freamwork/mapper/*.xml
+  type-aliases-package: com.yxx.freamwork.entity
+  global-config:
+    db-config:
+      # 4 UUID
+      id-type: 4
+      # 字段策略 0:"忽略判断",1:"非 NULL 判断",2:"非空判断"
+      field-strategy: 1
+      # 驼峰下划线转换
+      column-underline: true
+      # 数据库大写下划线转换
+      #capital-mode: true
+      # 逻辑删除配置
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      db-type: mysql
+    refresh: true
+    configuration:
+      map-underscore-to-camel-case: true
+      cache-enabled: false
+      call-setters-on-nulls: true
+
+# 数据源
+spring:
+  shardingsphere:
+    datasource:
+      # 主从库
+      names: master,slave
+      master:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://192.168.31.106:3306/lansen?serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=true
+        username: sg
+        password: Ssg-DKJ832-QSEF
+      slave:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://192.168.31.106:3306/lansen1030?serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=true
+        username: sg
+        password: Ssg-DKJ832-QSEF
+    # 读写分离
+    masterSlaveRule:
+      name: ds_ms
+      masterDataSourceName: master
+      slaveDataSourceNames:
+      - slave
+
+    props:
+      sql.show: true
+
 # 分布式事务seata配置
 seata:
   transport:

@@ -1,5 +1,5 @@
 # 启动flumn
-flume-ng agent --conf conf --conf-file conf/flume.conf -n a1 -Dflume.root.logger=INFO,console
+windows:    flume-ng agent --conf ../conf --conf-file ../conf/example.conf --name a1 -property flume.root.logger=INFO,console
 
 # 引入logback-flume的依赖
 <groupId>com.teambytes.logback</groupId>
@@ -14,3 +14,29 @@ logging.onfig: classpath:logback.xml
 storm nimbus
 storm supervisor
 storm ui
+
+# mahout将数据文件转成序列化文件(hdfs路径)
+mahout seqdirectory -i cvb/data -o cvb/seq
+
+# 将序列文件向量化
+mahout seq2sparse \
+    -i aa/bb \ # 输入文件路径
+    -o aa/bb \ # 输出文件路径
+    -wt tfidf \ # 生成dfidf文件
+    -- analyzerName org.apache.lucene.analysis.core.WhitespaceAnalyzer \ # 在这里需要指定这里包，因为默认不是中文，要对中文进行处理，才需要用到lucene的这个包(文本文件需要分词做本步骤)
+
+# 转化成矩阵
+mahout rowid -i lda/spa/tfidf-vectors -o  lda/matrix
+
+# 调用cvb
+mahout cvb \
+    -i aa/bb \
+    -o aa/bb \
+    -k 15 \ #生成主题个数
+    -ow \ # 是否覆盖迭代结果
+    -x 20 \ # 设置迭代次数
+    -dict aa/bb \ # 指定词典位置
+    -dt aa/bb \ # 生成文档主题
+    -mt aa/bb \ # 生成主题模型
+
+

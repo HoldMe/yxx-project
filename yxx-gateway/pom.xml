@@ -32,12 +32,6 @@
             <artifactId>lombok</artifactId>
             <version>1.18.6</version>
         </dependency>
-        <!-- 引入logback-flume的依赖 -->
-        <dependency>
-            <groupId>com.teambytes.logback</groupId>
-            <artifactId>logback-flume-appender_2.10</artifactId>
-            <version>0.0.9</version>
-        </dependency>
     </dependencies>
 
     <build>

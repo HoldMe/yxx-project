@@ -22,7 +22,7 @@ import org.springframework.context.annotation.Configuration;
  * @date 2019/10/31
  */
 //@Configuration
-public class ElasticJobConfig {
+public class MyElasticJobConfig {
 
     @Value("${elastic.job.cron}")
     private String cron;
@@ -36,7 +36,7 @@ public class ElasticJobConfig {
     @Autowired
     private ZookeeperRegistryCenter zookeeperRegistryCenter;
 
-    public ElasticJobConfig(){}
+    public MyElasticJobConfig(){}
 
     @Bean
     public SimpleJob elasticJob(){
