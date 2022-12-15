@@ -17,7 +17,7 @@
         <zipkin.version>2.12.1</zipkin.version>
         <oss.sts.version>3.0.0</oss.sts.version>
         <jasperreports.version>6.8.0</jasperreports.version>
-        <org.springframework.version>5.1.5.RELEASE</org.springframework.version>
+        <org.springframework.version>5.2.20.RELEASE</org.springframework.version>
         <jwt.version>0.9.1</jwt.version>
     </properties>
 
